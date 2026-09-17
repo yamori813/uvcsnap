@@ -8,4 +8,4 @@ LDFLAGS +=  -L /usr/lib/x86_64-linux-gnu
 OBJ = main.o jpeg.o
 
 uvcsnap: $(OBJ)
-	cc $(CFLAGS) $(LDFLAGS) -o uvcsnap $(OBJ)
+	cc $(LDFLAGS) -o uvcsnap $(OBJ)
