@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libjpeg-turbo8-dev
-          find /usr/local -name libjpeg.so
+          ls /usr/local
 
       - name: Run make
         run: make
