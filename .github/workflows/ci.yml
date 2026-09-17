@@ -20,7 +20,7 @@ jobs:
       - name: Install libjpeg
         run: |
           sudo apt-get update
-          sudo apt install -y libjpeg-turbo
+          sudo apt-get install -y libjpeg-turbo8-dev
 
       - name: Run make
         run: make
