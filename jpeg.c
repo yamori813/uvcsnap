@@ -5,7 +5,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#define cimg_use_jpeg 
 #include <jpeglib.h>
 #include <time.h>
 
