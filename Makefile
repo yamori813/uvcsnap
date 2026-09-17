@@ -1,6 +1,6 @@
 
 CFLAGS +=  -I/usr/pkg/include -I/usr/local/include
-LDFLAGS +=  -L/usr/pkg/lib -L/usr/local/lib -l jpeg
+LDFLAGS +=  -L/usr/pkg/lib -L/usr/local/lib -ljpeg
 
 SRC = main.c jpeg.c
 
