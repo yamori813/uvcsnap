@@ -1,6 +1,7 @@
 
 CFLAGS +=  -I/usr/pkg/include -I/usr/local/include
-LDFLAGS +=  -L/usr/pkg/lib -L/usr/local/lib -ljpeg
+LDFLAGS +=  -L/usr/pkg/lib -ljpeg
+LDFLAGS +=  -L/usr/lib/x86_64-linux-gnu
 
 OBJ = main.o jpeg.o
 
