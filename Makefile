@@ -2,7 +2,7 @@
 CFLAGS +=  -I/usr/pkg/include -I/usr/local/include
 LDFLAGS +=  -L/usr/pkg/lib -L/usr/local/lib -ljpeg
 
-SRC = main.c jpeg.c
+OBJ = main.o jpeg.o
 
-uvcsnap: $(SRC)
-	cc $(CFLAGS) $(LDFLAGS) -o uvcsnap $(SRC)
+uvcsnap: $(OBJ)
+	cc $(CFLAGS) $(LDFLAGS) -o uvcsnap $(OBJ)
