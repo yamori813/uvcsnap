@@ -67,13 +67,12 @@ xioctl(int fd, int request, void *arg)
 }
 
 static void
-process_image(void * p, int size, int num, int w, int h)
+process_image(void * p, int size, int num, int w, int h, int quality)
 {
 	char filename[15];
-	sprintf(filename, "frame-%d.jpg", num);
+	sprintf(filename, "frame-%d.jpg", num + 1);
 	FILE *fp=fopen(filename,"wb");
 	
-	int quality = 95;
 	compress_yuyv_to_jpeg (w, h, p, fp, quality);
 
 	fflush(fp);
@@ -82,7 +81,7 @@ process_image(void * p, int size, int num, int w, int h)
 }
 
 static int
-read_frame(int count, int w, int h)
+read_frame(int count, int w, int h, int q)
 {
 	struct v4l2_buffer buf;
 	unsigned int i;
@@ -111,7 +110,7 @@ read_frame(int count, int w, int h)
 
 	if (count >= DUMMYFRAME)
 		process_image (buffers[buf.index].start,
-			buffers[buf.index].length, count - 20, w, h);
+			buffers[buf.index].length, count - 20, w, h, q);
 
 	if (-1 == xioctl (fd, VIDIOC_QBUF, &buf))
 		errno_exit ("VIDIOC_QBUF");
@@ -120,7 +119,7 @@ read_frame(int count, int w, int h)
 }
 
 static void
-mainloop(int count, int w, int h)
+mainloop(int count, int w, int h, int q)
 {
 	unsigned int i;
 
@@ -153,7 +152,7 @@ mainloop(int count, int w, int h)
 				exit (EXIT_FAILURE);
 			}
 
-			if (read_frame (i, w, h))
+			if (read_frame (i, w, h, q))
 				break;
 	
 			/* EAGAIN - continue select loop. */
@@ -391,19 +390,21 @@ usage(FILE *fp, int  argc, char **argv)
 		 "Usage: %s [options]\n\n"
 		 "Options:\n"
 		 "-d | --device name   Video device name [/dev/video0]\n"
-		 "-h | --help	  Print this message\n"
-		 "-c | --count	 Number of frames to grab\n"
-		 "-s | --size	 Frame size (videoctl command) [640x480]\n"
+		 "-h | --help          Print this message\n"
+		 "-c | --count         Number of frames to grab [1]\n"
+		 "-q | --quality       jpeg quality [95]\n"
+		 "-s | --size          Frame size (videoctl command) [640x480]\n"
 		 "",
 		 argv[0]);
 }
 
-static const char short_options [] = "d:c:s:h";
+static const char short_options [] = "d:c:q:s:h";
 
 static const struct option
 long_options [] = {
 	{ "device",     required_argument,      NULL,	   'd' },
 	{ "count",      required_argument,      NULL,	   'c' },
+	{ "quality",    required_argument,      NULL,	   'q' },
 	{ "size",       required_argument,      NULL,	   's' },
 	{ "help",       no_argument,	    NULL,	   'h' },
 	{ 0, 0, 0, 0 }
@@ -416,6 +417,7 @@ main(int argc, char **argv)
 	int count = 1;
 	char *p;
 	int w = 640, h = 480;
+	int quality = 95;
 
 	for (;;) {
 		int index;
@@ -438,6 +440,10 @@ main(int argc, char **argv)
 
 		case 'c':
 			count = atoi(optarg);
+			break;
+
+		case 'q':
+			quality = atoi(optarg);
 			break;
 
 		case 's':
@@ -467,7 +473,7 @@ main(int argc, char **argv)
 
 	start_capturing ();
 
-	mainloop (count + DUMMYFRAME, w, h);
+	mainloop (count + DUMMYFRAME, w, h, quality);
 
 	stop_capturing ();
 
